@@ -1,7 +1,11 @@
 package com.franckycorp.microcommerce.web.controller;
 
+import com.fasterxml.jackson.databind.ser.FilterProvider;
+import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
+import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.franckycorp.microcommerce.web.dao.ProductDao;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.*;
 
 import com.franckycorp.microcommerce.web.model.Product;
@@ -16,13 +20,19 @@ public class ProductController {
 
     private final ProductDao productDao;
 
-    public ProductController(ProductDao productDao){
+    public ProductController(ProductDao productDao) {
         this.productDao = productDao;
     }
 
     @GetMapping("/Produits")
-    public List<Product> listeProduits() {
-        return productDao.findAll();
+    public MappingJacksonValue listeProduits() {
+        List<Product> produits = productDao.findAll();
+        SimpleBeanPropertyFilter monFiltre = SimpleBeanPropertyFilter.serializeAllExcept("prixAchat");
+        FilterProvider listeDeNosFiltres = new SimpleFilterProvider().addFilter("monFiltreDynamique",
+                monFiltre);
+        MappingJacksonValue produitsFiltres = new MappingJacksonValue(produits);
+        produitsFiltres.setFilters(listeDeNosFiltres);
+        return produitsFiltres;
     }
 
     @GetMapping("/Produits/{id}")

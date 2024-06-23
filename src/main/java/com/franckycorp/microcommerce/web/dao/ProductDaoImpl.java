@@ -7,13 +7,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository
-public class ProductDaoImpl implements ProductDao{
+public class ProductDaoImpl implements ProductDao {
     public static List<Product> products = new ArrayList<>();
 
     static {
-        products.add(new Product(1, "Ordinateur portable", 350));
-        products.add(new Product(2, "Aspirateur Robot", 500));
-        products.add(new Product(3, "Table de Ping Pong", 750));
+        products.add(new Product(1, "Ordinateur portable", 350, 120));
+        products.add(new Product(2, "Aspirateur Robot", 500, 200));
+        products.add(new Product(3, "Table de Ping Pong", 750, 400));
     }
 
     @Override
@@ -23,8 +23,8 @@ public class ProductDaoImpl implements ProductDao{
 
     @Override
     public Product findById(int id) {
-        for (Product product : products){
-            if (product.getId() == id){
+        for (Product product : products) {
+            if (product.getId() == id) {
                 return product;
             }
         }
