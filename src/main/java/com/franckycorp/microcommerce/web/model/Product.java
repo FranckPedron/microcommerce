@@ -1,4 +1,4 @@
-package com.franckycorp.microcommerce.model;
+package com.franckycorp.microcommerce.web.model;
 
 public class Product {
     private int id;

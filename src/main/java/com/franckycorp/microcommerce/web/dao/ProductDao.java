@@ -1,6 +1,6 @@
 package com.franckycorp.microcommerce.web.dao;
 
-import com.franckycorp.microcommerce.model.Product;
+import com.franckycorp.microcommerce.web.model.Product;
 //import org.springframework.stereotype.Repository;
 
 import java.util.List;
