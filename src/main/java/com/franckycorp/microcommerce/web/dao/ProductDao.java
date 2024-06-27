@@ -1,12 +1,17 @@
 package com.franckycorp.microcommerce.web.dao;
 
 import com.franckycorp.microcommerce.web.model.Product;
-//import org.springframework.stereotype.Repository;
-
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 import java.util.List;
 
-public interface ProductDao {
-    List<Product> findAll();
+@Repository
+public interface ProductDao extends JpaRepository<Product, Integer> {
     Product findById(int id);
-    Product save(Product product);
+    List<Product> findByPrixGreaterThan(int prixLimit);
+
+//    @Query("select id, nom, prix from Product p where p.prix > :prixLimit")
+//    List<Product> chercherUnProduitCher(@Param("prixLimit") int prix);
 }
