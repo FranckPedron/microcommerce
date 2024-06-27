@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.franckycorp.microcommerce.web.dao.ProductDao;
 import com.franckycorp.microcommerce.web.exceptions.ProduitIntrouvableException;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJacksonValue;
@@ -48,7 +49,7 @@ public class ProductController {
     }
 
     @PostMapping("/Produits")
-    public ResponseEntity<Product> ajouterProduit(@RequestBody Product product) {
+    public ResponseEntity<Product> ajouterProduit(@Valid @RequestBody Product product) {
         Product productAdded = productDao.save(product);
 
         URI location = ServletUriComponentsBuilder

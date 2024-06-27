@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Size;
 
 //@JsonFilter("monFiltreDynamique")
 @Entity
@@ -11,7 +13,11 @@ public class Product {
     @Id
     @GeneratedValue
     private int id;
+
+    @Size(min = 3, max = 25)
     private String nom;
+
+    @Min(value = 1)
     private int prix;
 
     private int prixAchat;
