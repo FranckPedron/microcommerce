@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.franckycorp.microcommerce.web.dao.ProductDao;
+import com.franckycorp.microcommerce.web.exceptions.ProduitIntrouvableException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJacksonValue;
@@ -36,7 +37,9 @@ public class ProductController {
 
     @GetMapping("/Produits/{id}")
     public Product afficherUnProduit(@PathVariable("id") int id) {
-        return productDao.findById(id);
+        Product produit = productDao.findById(id);
+        if (produit == null) throw new ProduitIntrouvableException("Le produit avec l'id " + id + " est INTROUVABLE. Écran Bleu si je pouvais.");
+        return produit;
     }
 
     @GetMapping("/test/produits/{prixLimit}")
