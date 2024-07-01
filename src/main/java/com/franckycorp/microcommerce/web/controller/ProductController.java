@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.franckycorp.microcommerce.web.dao.ProductDao;
 import com.franckycorp.microcommerce.web.exceptions.ProduitIntrouvableException;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @RestController
+@Tag(name = "Produits", description = "API pour les opérations CRUD sur les produits.")
 public class ProductController {
 
     @Autowired
