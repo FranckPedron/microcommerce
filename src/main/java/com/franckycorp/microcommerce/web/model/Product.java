@@ -1,15 +1,21 @@
 package com.franckycorp.microcommerce.web.model;
 
-import com.fasterxml.jackson.annotation.JsonFilter;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
 
 //@JsonFilter("monFiltreDynamique")
 @Entity
+@Getter
+@Setter
 public class Product {
+
+
     @Id
     @GeneratedValue
     private int id;
@@ -20,6 +26,7 @@ public class Product {
     @Min(value = 1)
     private int prix;
 
+    @Schema(description = "Le prix d'achat du produit.")
     private int prixAchat;
 
     public Product() {
@@ -29,38 +36,6 @@ public class Product {
         this.id = id;
         this.nom = nom;
         this.prix = prix;
-        this.prixAchat = prixAchat;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getNom() {
-        return nom;
-    }
-
-    public void setNom(String nom) {
-        this.nom = nom;
-    }
-
-    public int getPrix() {
-        return prix;
-    }
-
-    public void setPrix(int prix) {
-        this.prix = prix;
-    }
-
-    public int getPrixAchat() {
-        return prixAchat;
-    }
-
-    public void setPrixAchat(int prixAchat) {
         this.prixAchat = prixAchat;
     }
 
