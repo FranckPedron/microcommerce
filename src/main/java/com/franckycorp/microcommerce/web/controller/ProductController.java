@@ -1,11 +1,9 @@
 package com.franckycorp.microcommerce.web.controller;
 
-import com.fasterxml.jackson.databind.ser.FilterProvider;
-import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
-import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.franckycorp.microcommerce.web.dao.ProductDao;
 import com.franckycorp.microcommerce.web.exceptions.ProduitGratuitException;
 import com.franckycorp.microcommerce.web.exceptions.ProduitIntrouvableException;
+import com.franckycorp.microcommerce.web.model.Product;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -14,10 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.*;
-
-import com.franckycorp.microcommerce.web.model.Product;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
@@ -33,14 +28,14 @@ public class ProductController {
 
     @Operation(summary = "Récupère la liste des produits.")
     @GetMapping("/Produits")
-    public MappingJacksonValue listeProduits() {
-        Iterable<Product> produits = productDao.findAll();
-        SimpleBeanPropertyFilter monFiltre = SimpleBeanPropertyFilter.serializeAllExcept("prixAchat");
-        FilterProvider listeDeNosFiltres = new SimpleFilterProvider().addFilter("monFiltreDynamique",
-                monFiltre);
-        MappingJacksonValue produitsFiltres = new MappingJacksonValue(produits);
-        produitsFiltres.setFilters(listeDeNosFiltres);
-        return produitsFiltres;
+    public List<Product> listeProduits() {
+        return productDao.findAll();
+    }
+
+    @Operation(summary = "Retourne la liste des produits par ordre alphabétique.")
+    @GetMapping("/TriProduits")
+    public List<Product> trierProduitsParOrdreAlphabetique() {
+        return productDao.findAllByOrderByNomAsc();
     }
 
     @Operation(summary = "Récupère un produit grâce à son ID .")
@@ -51,11 +46,12 @@ public class ProductController {
     @GetMapping("/Produits/{id}")
     public Product afficherUnProduit(@Parameter(name = "id", description = "id du produit", example = "5", required = true) @PathVariable("id") int id) {
         Product produit = productDao.findById(id);
-        if (produit == null) throw new ProduitIntrouvableException("Le produit avec l'id " + id + " est INTROUVABLE. Écran Bleu si je pouvais.");
+        if (produit == null)
+            throw new ProduitIntrouvableException("Le produit avec l'id " + id + " est INTROUVABLE. Écran Bleu si je pouvais.");
         return produit;
     }
 
-    @Operation(summary= "Récupère la liste des produits dont le prix est supérieur à une valeur donnée.")
+    @Operation(summary = "Récupère la liste des produits dont le prix est supérieur à une valeur donnée.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Produits trouvés."),
             @ApiResponse(responseCode = "404", description = "Produits non trouvés.")
@@ -63,7 +59,8 @@ public class ProductController {
     @GetMapping("/test/produits/{prixLimit}")
     public List<Product> testDeRequetes(@Parameter(name = "prixLimit", description = "prix minimmum", example = "195", required = true) @PathVariable("prixLimit") int prixLimit) {
         List<Product> produits = productDao.findByPrixGreaterThan(prixLimit);
-        if (produits.isEmpty()) throw new ProduitIntrouvableException("Aucun produit trouvé avec un prix supérieur à " + prixLimit);
+        if (produits.isEmpty())
+            throw new ProduitIntrouvableException("Aucun produit trouvé avec un prix supérieur à " + prixLimit);
         return produits;
     }
 
@@ -104,12 +101,9 @@ public class ProductController {
                 .collect(Collectors.toList());
     }
 
-    public  Integer calculerMargeProduit(Product product) {
+    public Integer calculerMargeProduit(Product product) {
         return product.getPrix() - product.getPrixAchat();
     }
 
-    public List<Product> trierProduitsParOrdreAlphabetique() {
-        return productDao.findAllByOrderByNomAsc();
-    }
 }
 
