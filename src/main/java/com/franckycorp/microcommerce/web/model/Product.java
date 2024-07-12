@@ -37,7 +37,7 @@ public class Product {
         this.nom = nom;
         this.prix = prix;
         this.prixAchat = prixAchat;
-    }
+           }
 
     @Override
     public String toString() {

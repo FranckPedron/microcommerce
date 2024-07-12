@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.franckycorp.microcommerce.web.dao.ProductDao;
+import com.franckycorp.microcommerce.web.exceptions.ProduitGratuitException;
 import com.franckycorp.microcommerce.web.exceptions.ProduitIntrouvableException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -21,6 +22,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @Tag(name = "Produits", description = "API pour les opérations CRUD sur les produits.")
@@ -68,6 +70,9 @@ public class ProductController {
     @Operation(summary = "Ajoute un produit.")
     @PostMapping("/Produits")
     public ResponseEntity<Product> ajouterProduit(@Valid @RequestBody Product product) {
+        if (product.getPrix() == 0) {
+            throw new ProduitGratuitException("Le produit ne peut pas être gratuit.");
+        }
         Product productAdded = productDao.save(product);
 
         URI location = ServletUriComponentsBuilder
@@ -88,6 +93,23 @@ public class ProductController {
     @PutMapping("/Produits")
     public void updateProduit(@RequestBody Product product) {
         productDao.save(product);
+    }
+
+    @Operation(summary = "Calcule la marge d'un produit.")
+    @GetMapping("/AdminProduits")
+    public List<String> afficherMargeProduit() {
+        List<Product> products = productDao.findAll();
+        return products.stream()
+                .map(product -> product.toString() + " : " + calculerMargeProduit(product))
+                .collect(Collectors.toList());
+    }
+
+    public  Integer calculerMargeProduit(Product product) {
+        return product.getPrix() - product.getPrixAchat();
+    }
+
+    public List<Product> trierProduitsParOrdreAlphabetique() {
+        return productDao.findAllByOrderByNomAsc();
     }
 }
 
