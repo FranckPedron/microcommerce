@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,6 +50,7 @@ public class ProductController {
         if (produit == null)
             throw new ProduitIntrouvableException("Le produit avec l'id " + id + " est INTROUVABLE. Écran Bleu si je pouvais.");
         return produit;
+
     }
 
     @Operation(summary = "Récupère la liste des produits dont le prix est supérieur à une valeur donnée.")
@@ -94,15 +96,14 @@ public class ProductController {
 
     @Operation(summary = "Calcule la marge d'un produit.")
     @GetMapping("/AdminProduits")
-    public List<String> afficherMargeProduit() {
+    public List<String> calculerMargeProduit() {
         List<Product> products = productDao.findAll();
-        return products.stream()
-                .map(product -> product.toString() + " : " + calculerMargeProduit(product))
-                .collect(Collectors.toList());
-    }
-
-    public Integer calculerMargeProduit(Product product) {
-        return product.getPrix() - product.getPrixAchat();
+        List<String> productMarge = new ArrayList<>();
+        for (Product product:products) {
+            int marge = product.getPrix() - product.getPrixAchat();
+            productMarge.add(product.toString() + " : " + marge);
+        }
+        return productMarge;
     }
 
 }
